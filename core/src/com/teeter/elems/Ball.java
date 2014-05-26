@@ -31,7 +31,7 @@ public class Ball extends DynamicObject {
 		
 		FixtureDef def = new FixtureDef();
 		def.shape = circle;
-		def.density = 7.5f;
+		def.density = 2.5f;
 		def.friction = 5.75f;
 		def.restitution = 0.2f;
 		

@@ -66,6 +66,9 @@ public class Play implements Screen {
 				Gdx.graphics.getWidth() * WORLD_TO_BOX,
 				Gdx.graphics.getHeight() / 15 * WORLD_TO_BOX, world);
 		wall.makeBody();
+		System.out.print(Gdx.graphics.getWidth());
+		System.out.print(Gdx.graphics.getHeight());
+		
 //		wall = new Wall(0, -borderX+Gdx.graphics.getHeight() / 2 * WORLD_TO_BOX,
 //				Gdx.graphics.getWidth() * WORLD_TO_BOX,
 //				Gdx.graphics.getHeight() / 15 * WORLD_TO_BOX, world);
