@@ -1,18 +1,10 @@
 package com.teeter.screens;
 
-import aurelienribon.tweenengine.Timeline;
-import aurelienribon.tweenengine.Tween;
-import aurelienribon.tweenengine.TweenManager;
-
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -20,18 +12,85 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.teeter.tween.ActorAccessor;
-import com.teeter.tween.SpriteAccessor;
+import com.teeter.game.Teeter;
 
-public class MainMenu implements Screen {
+public class MainMenu extends AbstractScreen {
 
-	private TweenManager tweenM;
 	private Stage stage;
-	private TextureAtlas atlas;
 	private Skin skin;
 	private Table table;
 	private Sprite splsh;
 	private SpriteBatch sprtB;
+	private Label heading;
+	private TextButton buttonPlay, buttonOpt, buttonExit;
+	
+	public MainMenu(Teeter game) {
+		super(game);
+		this.game = game;
+	}
+	
+	public void asd() {
+		skin = game.manager.get("ui/uiskin.json", Skin.class);
+		table = new Table(skin);
+		table.setBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		
+		//setting up stage and stuff
+		stage = new Stage();
+		stage.addActor(table);
+		Gdx.input.setInputProcessor(stage);	
+		
+		//heading
+		heading = new Label("Teeter", skin, "big");
+		heading.setFontScale(2);
+		
+		//buttons
+		
+		buttonPlay = new TextButton("PLAY", skin);
+		buttonPlay.pad(20);
+		buttonPlay.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				game.setScreen(new Play(game));
+			}
+		});
+
+		buttonOpt = new TextButton("OPTIONS", skin);
+		buttonOpt.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				game.setScreen(new DialogPopup(game, "                  YOU WIN!"));
+			}
+		});
+		buttonOpt.pad(20);
+
+		buttonExit = new TextButton("EXIT", skin);
+		buttonExit.pad(20);
+		buttonExit.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				Gdx.app.exit();
+			}
+		});
+		
+		//adding stuff
+		
+		table.add(heading);
+		table.getCell(heading).spaceBottom(100);
+		table.row();
+		table.add(buttonPlay);
+		table.getCell(buttonPlay).spaceBottom(20);
+		table.row();
+		table.add(buttonOpt);
+		table.getCell(buttonOpt).spaceBottom(20);
+		table.row();
+		table.add(buttonExit);
+		table.row();
+	
+		sprtB = new SpriteBatch();
+		Texture stxt = new Texture("img/metal.jpg");
+		splsh = new Sprite(stxt);
+		splsh.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+	}
 	
 	@Override
 	public void render(float delta) {
@@ -45,12 +104,11 @@ public class MainMenu implements Screen {
 		
 		stage.act(delta);
 		stage.draw();
-
-		tweenM.update(delta);
 	}
 
 	@Override
 	public void resize(int width, int height) {
+		asd();
 		stage.getViewport().update(width, height, true);
 		table.invalidateHierarchy();
 	}
@@ -58,95 +116,10 @@ public class MainMenu implements Screen {
 	@Override
 	public void show() {
 		
-		sprtB = new SpriteBatch();
-		tweenM = new TweenManager();
-		Tween.registerAccessor(Sprite.class, new SpriteAccessor());
-		Texture stxt = new Texture("img/metal.png");
-		splsh = new Sprite(stxt);
-		splsh.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		
-		//setting up stage and stuff
-		stage = new Stage();
-		Gdx.input.setInputProcessor(stage);
-		atlas = new TextureAtlas("ui/button.pack");
-		skin = new Skin(Gdx.files.internal("ui/menuSkin.json"), atlas);
-		
-		table = new Table(skin);
-		table.setBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		
-		//heading
-		Label heading = new Label("Teeter", skin, "big");
-		heading.setFontScale(2);
-		
-		//buttons
-		
-		TextButton buttonPlay = new TextButton("PLAY", skin);
-		buttonPlay.pad(20);
-		buttonPlay.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				((Game) Gdx.app.getApplicationListener()).setScreen(new Play());
-			}
-		});
-		
-		TextButton buttonOpt = new TextButton("OPTIONS", skin);
-		buttonOpt.pad(20);
-		
-		TextButton buttonExit = new TextButton("EXIT", skin);
-		buttonExit.pad(20);
-		buttonExit.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				Gdx.app.exit();
-			}
-		});
-		
-		
-		//adding stuff
-		table.add(heading);
-		table.getCell(heading).spaceBottom(100);
-		table.row();
-		table.add(buttonPlay);
-		table.getCell(buttonPlay).spaceBottom(20);
-		table.row();
-		table.add(buttonOpt);
-		table.getCell(buttonOpt).spaceBottom(20);
-		table.row();
-		table.add(buttonExit);
-		table.row();
-		stage.addActor(table);
-		
-		//animations
-		Tween.registerAccessor(Actor.class, new ActorAccessor());
-		
-		Timeline.createSequence().beginSequence()
-		.push(Tween.to(heading, ActorAccessor.RGB, .5f).target(0, 0, 1))
-		.push(Tween.to(heading, ActorAccessor.RGB, .5f).target(0, 1, 0))
-		.push(Tween.to(heading, ActorAccessor.RGB, .5f).target(0, 1, 1))
-		.push(Tween.to(heading, ActorAccessor.RGB, .5f).target(1, 0, 0))
-		.push(Tween.to(heading, ActorAccessor.RGB, .5f).target(1, 0, 1))
-		.push(Tween.to(heading, ActorAccessor.RGB, .5f).target(1, 1, 0))
-		.push(Tween.to(heading, ActorAccessor.RGB, .5f).target(1, 1, 1))
-		.end().repeat(Tween.INFINITY, 0).start(tweenM);
-		
-		Timeline.createSequence().beginSequence()
-		.push(Tween.set(buttonOpt, ActorAccessor.ALPHA).target(0))
-		.push(Tween.set(buttonExit, ActorAccessor.ALPHA).target(0))
-		.push(Tween.from(heading, ActorAccessor.ALPHA, .25f).target(0))
-		.push(Tween.to(buttonPlay, ActorAccessor.ALPHA, .25f).target(1))
-		.push(Tween.to(buttonOpt, ActorAccessor.ALPHA, .25f).target(1))
-		.push(Tween.to(buttonExit, ActorAccessor.ALPHA, .25f).target(1))
-		.end().start(tweenM);
-		
-		Tween.from(table, ActorAccessor.ALPHA, .5f).target(0).start(tweenM);
-		Tween.from(table, ActorAccessor.Y, .5f).target(Gdx.graphics.getHeight() / 8).start(tweenM);
-	 
-		tweenM.update(Gdx.graphics.getDeltaTime());
-		
 	}
 	
 	@Override
-	public void hide() {
+	public void hide() {	
 		dispose();
 	}
 
@@ -161,12 +134,10 @@ public class MainMenu implements Screen {
 	}
 
 	@Override
-	public void dispose() {
-		stage.dispose();
-		atlas.dispose();
-		skin.dispose();
-		sprtB.dispose();
-		splsh.getTexture().dispose();
+	public void dispose() {	
+		 sprtB.dispose();
+		 splsh.getTexture().dispose();
+		 stage.dispose();
 	}
 
 }

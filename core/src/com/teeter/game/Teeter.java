@@ -2,16 +2,25 @@ package com.teeter.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
+import com.teeter.screens.LevelMenu;
+import com.teeter.screens.MainMenu;
+import com.teeter.screens.Play;
 import com.teeter.screens.SplashScreen;
 
 public class Teeter extends Game {
 	
-	static final float WORLD_TO_BOX = 0.01f;
-	static final float BOX_TO_WORLD = 100f;
+	public AssetManager manager = new AssetManager();
+	
+	SplashScreen splash;
+	LevelMenu lvlMenu;
+	MainMenu mainMenu;
+	Play play;
 	
 	@Override
 	public void create() {
-		setScreen(new SplashScreen());
+
+		setScreen(new SplashScreen(this));
 	}
 
 	@Override

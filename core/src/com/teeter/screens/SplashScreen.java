@@ -5,21 +5,24 @@ import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.TweenManager;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.teeter.game.Teeter;
 import com.teeter.tween.SpriteAccessor;
 
 
-public class SplashScreen implements Screen {
+public class SplashScreen extends AbstractScreen {
 
 	private Sprite splsh;
 	private SpriteBatch sprtB;
 	private TweenManager tweenM;
+	
+	public SplashScreen(Teeter game) {
+		super(game);
+	}
 	
 	@Override
 	public void render(float delta) {
@@ -39,11 +42,10 @@ public class SplashScreen implements Screen {
 	@Override
 	public void show() {
 		sprtB = new SpriteBatch();
-		
 		tweenM = new TweenManager();
 		Tween.registerAccessor(Sprite.class, new SpriteAccessor());
 		
-		Texture stxt = new Texture("img/Teeter.png");
+		Texture stxt = new Texture("img/Teeter.jpg");
 		splsh = new Sprite(stxt);
 		splsh.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		Tween.set(splsh, SpriteAccessor.ALPHA).target(0).start(tweenM);
@@ -51,7 +53,7 @@ public class SplashScreen implements Screen {
 			
 			@Override
 			public void onEvent(int arg0, BaseTween<?> arg1) {
-				((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+				game.setScreen(new LoadingScreen(game));
 			}
 		}).start(tweenM);
 		
