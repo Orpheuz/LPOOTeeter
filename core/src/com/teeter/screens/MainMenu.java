@@ -26,10 +26,30 @@ public class MainMenu extends AbstractScreen {
 	
 	public MainMenu(Teeter game) {
 		super(game);
-		this.game = game;
 	}
 	
-	public void asd() {
+	@Override
+	public void render(float delta) {
+		Gdx.gl.glClearColor(0, 0, 0, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		
+		
+		sprtB.begin();
+		splsh.draw(sprtB);
+		sprtB.end();
+		
+		stage.act(delta);
+		stage.draw();
+	}
+
+	@Override
+	public void resize(int width, int height) {
+		stage.getViewport().update(width, height, true);
+		table.invalidateHierarchy();
+	}
+
+	@Override
+	public void show() {
 		skin = game.manager.get("ui/uiskin.json", Skin.class);
 		table = new Table(skin);
 		table.setBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -50,7 +70,7 @@ public class MainMenu extends AbstractScreen {
 		buttonPlay.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				game.setScreen(new Play(game));
+				game.setScreen(new LevelMenu(game));
 			}
 		});
 
@@ -58,7 +78,7 @@ public class MainMenu extends AbstractScreen {
 		buttonOpt.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				game.setScreen(new DialogPopup(game, "                  YOU WIN!"));
+				game.setScreen(new OptionsMenu(game));
 			}
 		});
 		buttonOpt.pad(20);
@@ -90,31 +110,6 @@ public class MainMenu extends AbstractScreen {
 		Texture stxt = new Texture("img/metal.jpg");
 		splsh = new Sprite(stxt);
 		splsh.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-	}
-	
-	@Override
-	public void render(float delta) {
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		
-		
-		sprtB.begin();
-		splsh.draw(sprtB);
-		sprtB.end();
-		
-		stage.act(delta);
-		stage.draw();
-	}
-
-	@Override
-	public void resize(int width, int height) {
-		asd();
-		stage.getViewport().update(width, height, true);
-		table.invalidateHierarchy();
-	}
-
-	@Override
-	public void show() {
 		
 	}
 	

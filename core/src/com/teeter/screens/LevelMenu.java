@@ -1,10 +1,17 @@
 package com.teeter.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL30;
+import com.teeter.game.Teeter;
 
-public class LevelMenu implements Screen {
+public class LevelMenu extends AbstractScreen {
+
+	private int level;
+	
+	public LevelMenu(Teeter game) {
+		super(game);
+		level = 1;
+	}
 
 	@Override
 	public void render(float delta) {
@@ -19,7 +26,7 @@ public class LevelMenu implements Screen {
 
 	@Override
 	public void show() {
-
+		game.setScreen(new Play(game, level));
 	}
 
 	@Override

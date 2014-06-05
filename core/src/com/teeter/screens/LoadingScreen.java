@@ -1,7 +1,6 @@
 package com.teeter.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -12,17 +11,15 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.teeter.game.Teeter;
 
-public class LoadingScreen implements Screen {
+public class LoadingScreen extends AbstractScreen {
 
-	private Teeter game;
     private Stage stage;
     private Table table;
-    private Skin skin;
     private Label tapScr;
 
     private Image loadingFrame;
@@ -36,7 +33,7 @@ public class LoadingScreen implements Screen {
     private Actor loadingBar;
 
     public LoadingScreen(Teeter game) {
-        this.game = game;
+    	super(game);
     }
 
     @Override
@@ -51,20 +48,13 @@ public class LoadingScreen implements Screen {
         
         TextureAtlas atlas = game.manager.get("ui/loading.pack", TextureAtlas.class);
         // Initialize the stage where we will place everything
-        table = new Table(skin);
+        table = new Table();
         table.setBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         stage = new Stage();
         
 		BitmapFont font = new BitmapFont();
 		font.setScale(2);
 		tapScr = new Label("Tap Screen to Continue", new LabelStyle(font, Color.WHITE));
-		
-		table.row();
-		table.row();
-		table.row();
-		table.row();
-		table.row();
-		table.add(tapScr);
 
         // Grab the regions from the atlas and create some images
         loadingFrame = new Image(atlas.findRegion("loading-frame"));
@@ -125,6 +115,7 @@ public class LoadingScreen implements Screen {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         if (game.manager.update()) { // Load some, will return true if done loading
+        	table.add(tapScr);
         	if(Gdx.input.isTouched())
         		game.setScreen(new MainMenu(game));
         }

@@ -3,23 +3,15 @@ package com.teeter.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
-import com.teeter.screens.LevelMenu;
-import com.teeter.screens.MainMenu;
-import com.teeter.screens.Play;
 import com.teeter.screens.SplashScreen;
 
 public class Teeter extends Game {
 	
 	public AssetManager manager = new AssetManager();
-	
-	SplashScreen splash;
-	LevelMenu lvlMenu;
-	MainMenu mainMenu;
-	Play play;
+	private boolean vibrate = true;
 	
 	@Override
 	public void create() {
-
 		setScreen(new SplashScreen(this));
 	}
 
@@ -56,5 +48,13 @@ public class Teeter extends Game {
 	@Override
 	public Screen getScreen() {
 		return super.getScreen();
+	}
+
+	public boolean isVibrate() {
+		return vibrate;
+	}
+
+	public void setVibrate(boolean vibrate) {
+		this.vibrate = vibrate;
 	}
 }

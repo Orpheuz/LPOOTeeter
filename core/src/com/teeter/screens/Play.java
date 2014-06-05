@@ -12,6 +12,7 @@ import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -19,9 +20,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 import com.teeter.elems.Ball;
-import com.teeter.elems.Hole;
-import com.teeter.elems.Wall;
 import com.teeter.game.Teeter;
+import com.teeter.worlds.TeeterWorld;
 
 public class Play extends AbstractScreen {
 
@@ -35,20 +35,21 @@ public class Play extends AbstractScreen {
 	private final int GAME_WON = 2;
 	private final int GAME_LOST = 3;
 
+	private int level;
+	private Ball ball;
 	private Table table;
 	private Stage stage;
 	private World world;
 	private OrthographicCamera camera;
-	private Hole hole;
-	private Ball ball;
-	private Wall wall;
 	private SpriteBatch batch;
 	private int state = 1;
 	private Array<Body> tmpBodies = new Array<Body>();
 	private Sprite sprt;
+	private TeeterWorld Tworld;
 
-	public Play(Teeter game) {
+	public Play(Teeter game, int level) {
 		super(game);
+		this.level = level;
 	}
 	
 	@Override
@@ -64,15 +65,12 @@ public class Play extends AbstractScreen {
 			
 			if(ball.getContHole() == 1) {
 				state = 3;
-				//((Game) Gdx.app.getApplicationListener()).setScreen(new DialogPopup("                 YOU LOSE!"));
 			}
 			if(ball.getContHole() == 2) {
-				state = 2;				
+				state = 2;
 			}
-			
 			batch.setProjectionMatrix(camera.combined); 
 			batch.begin();
-			
 			sprt.setPosition(-sprt.getWidth()/2, -sprt.getHeight()/2);
 			sprt.setScale(WORLD_TO_BOX);
 			sprt.draw(batch);
@@ -87,6 +85,14 @@ public class Play extends AbstractScreen {
 						sprite.draw(batch);
 					}
 				}
+//				else if (body.getFixtureList().get(0).getUserData() == "w") {
+//					if (body.getUserData() instanceof Sprite) {
+//						Sprite sprite = (Sprite) body.getUserData();
+//						sprite.setPosition(body.getPosition().x - sprite.getWidth()
+//								/ 2, body.getPosition().y - sprite.getHeight() / 2);
+//						sprite.draw(batch);
+//					}
+//				}
 				else {
 					temp = body;
 				}
@@ -100,22 +106,21 @@ public class Play extends AbstractScreen {
 			batch.end();
 			break;
 		case GAME_WON:
-			game.setScreen(new DialogPopup(game, "                  YOU WIN!"));
+			game.setScreen(new DialogPopup(game, "                  YOU WIN!", level));
 			break;
 		case GAME_LOST:
 			pause();
 			world.step(0, VELOCITYITR, POSITIONITR);
 			stage.draw();
 			boolean touched = Gdx.input.isTouched();
-			ball.setContHole(0);
 			if(touched) {
 				table.clearChildren();
 				state = 1;
 				createWorld();
 			}
+			ball.setContHole(0);
 			break;
 		}
-		//debugRenderer.render(world, camera.combined);
 	}
 
 	@Override
@@ -207,57 +212,32 @@ public class Play extends AbstractScreen {
 		table.setBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		table.add(tapScr);
 		
-		Texture stxt = new Texture("img/background.jpg");
+		Texture stxt = new Texture("img/back.jpg");
 		sprt = new Sprite(stxt);
 		batch = new SpriteBatch();
 		world = new World(new Vector2(0, 0), true);
 		camera = new OrthographicCamera(Gdx.graphics.getWidth() / 100,
 				Gdx.graphics.getHeight() / 100);
-
-		// creating the holes
 		
-		hole = new Hole(2, 1.5f, 0.125f / 4, world, 0);
-		hole.makeBody();
-
-		hole = new Hole(1, 0.3f, 0.125f / 4, world, 0);
-		hole.makeBody();
-
-		hole = new Hole(0.7f, 0.9f, 0.125f / 4, world, 0);
-		hole.makeBody();
+		Tworld = new TeeterWorld(world);
+		Tworld.makeWorld();
 		
-		hole = new Hole(-0.7f, -0.9f, 0.125f / 4, world, 1);
-		hole.makeBody();
-		
-		// creating the ball and its definitions
-		
-		ball = new Ball(0, 1, 0.125f, world);
-		ball.makeBody();
-
-		// creating the walls
-
-		float borderX = Gdx.graphics.getWidth() / 50;
-		float borderY = Gdx.graphics.getHeight() / 9;
-
-		wall = new Wall(0, (-borderY + Gdx.graphics.getHeight() / 2)
-				* WORLD_TO_BOX, Gdx.graphics.getWidth() * WORLD_TO_BOX,
-				(Gdx.graphics.getHeight() / 18) * WORLD_TO_BOX, world);
-		wall.makeBody();
-
-		wall = new Wall(0, (+borderY - Gdx.graphics.getHeight() / 2)
-				* WORLD_TO_BOX, Gdx.graphics.getWidth() * WORLD_TO_BOX,
-				(Gdx.graphics.getHeight() / 18) * WORLD_TO_BOX, world);
-		wall.makeBody();
-
-		wall = new Wall(
-				(-borderX + Gdx.graphics.getWidth() / 2) * WORLD_TO_BOX, 0,
-				(Gdx.graphics.getHeight() / 18) * WORLD_TO_BOX,
-				Gdx.graphics.getHeight() * WORLD_TO_BOX, world);
-		wall.makeBody();
-
-		wall = new Wall((borderX - Gdx.graphics.getWidth() / 2) * WORLD_TO_BOX,
-				0, (Gdx.graphics.getHeight() / 18) * WORLD_TO_BOX,
-				Gdx.graphics.getHeight() * WORLD_TO_BOX, world);
-		wall.makeBody();
+		switch(level) {
+		case 1:
+			Tworld.makeWorld1();
+			
+			float wSize = Gdx.graphics.getWidth();
+			float hSize = Gdx.graphics.getHeight();
+			float ratio = wSize /  hSize;
+			float ballSize = (float) (ratio/11.9);
+			
+			ball = new Ball(game, (float) -(wSize/2 * 0.8 * WORLD_TO_BOX), 
+					(float) -(hSize/2 * 0.7 * WORLD_TO_BOX), ballSize, world);
+			
+			ball.makeBody();
+			
+			break;
+		}
 	}
 
 }

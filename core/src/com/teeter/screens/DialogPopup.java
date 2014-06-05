@@ -13,10 +13,12 @@ public class DialogPopup extends ScreenAdapter {
 	private Stage stage;
 	private Skin skin;
 	protected Teeter game;
+	private int level;
 
-	public DialogPopup(Teeter game, String message) {
+	public DialogPopup(Teeter game, String message, int level) {
 		this.message = message;
 		this.game = game;
+		this.level = level;
 	}
 	
 	@Override
@@ -35,9 +37,9 @@ public class DialogPopup extends ScreenAdapter {
 			@Override
 			protected void result(final Object object) {
 				if (object.toString() != "Ok") {
-					game.setScreen(new Play(game));
+					game.setScreen(new Play(game, level));
 				} else {
-					game.setScreen(new MainMenu(game));
+					game.setScreen(new LevelMenu(game));
 				}
 			}
 

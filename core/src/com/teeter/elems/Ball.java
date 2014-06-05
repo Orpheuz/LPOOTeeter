@@ -13,24 +13,19 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
+import com.teeter.game.Teeter;
 
 public class Ball extends DynamicObject implements ContactListener{
 
+	private Teeter game;
 	private World world;
 	private float r;
 	private Body ball;
 	private int contHole = 0;
-	
-	public int getContHole() {
-		return contHole;
-	}
 
-	public void setContHole(int contHole) {
-		this.contHole = contHole;
-	}
-
-	public Ball(float x, float y, float r, World world) {
+	public Ball(Teeter game, float x, float y, float r, World world) {
 		super(x, y, r, r);
+		this.game = game;
 		this.world = world;
 		this.r = r;
 		world.setContactListener(this);
@@ -65,7 +60,7 @@ public class Ball extends DynamicObject implements ContactListener{
 
 		float acY = Gdx.input.getAccelerometerY();
 		float acX = Gdx.input.getAccelerometerX();
-		ball.applyForceToCenter(acY/2, -acX/2, true);
+		ball.applyForceToCenter(r*5 * acY, r*5 * -acX, true);
 
 		velocity.add(acY * deltaTime, -acX * deltaTime);
 
@@ -82,16 +77,19 @@ public class Ball extends DynamicObject implements ContactListener{
 				contact.getFixtureB().getUserData().equals("b") &&
 				contact.getFixtureA().getUserData().equals("h")) {
 			contHole = 1;
+			System.out.println("contactH");
 		}
 		if(contact.getFixtureA().getUserData() != null && 
 				contact.getFixtureB().getUserData().equals("b") &&
 				contact.getFixtureA().getUserData().equals("wh")) {
 			contHole = 2;
+			System.out.println("contactWH");
 		}
 		if(contact.getFixtureA().getUserData() != null && 
 				contact.getFixtureB().getUserData().equals("b") &&
 				contact.getFixtureA().getUserData().equals("w")) {
-			Gdx.input.vibrate(100);
+			if(game.isVibrate())
+				Gdx.input.vibrate(100);
 		}
 		
 	}
@@ -109,6 +107,15 @@ public class Ball extends DynamicObject implements ContactListener{
 	@Override
 	public void postSolve(Contact contact, ContactImpulse impulse) {
 		
+	}
+	
+	
+	public int getContHole() {
+		return contHole;
+	}
+
+	public void setContHole(int contHole) {
+		this.contHole = contHole;
 	}
 	
 }
