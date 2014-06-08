@@ -23,6 +23,8 @@ public class Player implements Json.Serializable{
 	
 	@Override
 	public void write(Json json) {
+		//writing json
+		
 		FileHandle fl = Gdx.files.local("playerData.json");
 		String playerD = json.toJson(level, Integer.class);
 		fl.writeString(playerD, false);

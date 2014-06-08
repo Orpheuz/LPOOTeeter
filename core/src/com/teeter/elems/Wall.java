@@ -25,8 +25,9 @@ public class Wall extends Element{
 	
 	public void makeBody() {
 		Texture text;
-		Sprite wallSprite;
 		text = new Texture("img/wall.jpg");
+		
+		Sprite wallSprite;
 		wallSprite = new Sprite(text);
 		wallSprite.setSize(bounds.getWidth(), bounds.getHeight());
 		wallSprite.setOrigin(bounds.getWidth()/2, bounds.getHeight()/2);
@@ -35,6 +36,7 @@ public class Wall extends Element{
 		bodydef.type = BodyType.StaticBody;
 		bodydef.position.set(position.x, position.y);
 		
+		//rotating sprite because the texture bug
 		if(dir == DOWN) {
 			wallSprite.rotate(-90);
 			bodydef.angle = (float) (Math.PI/2);

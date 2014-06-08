@@ -60,8 +60,11 @@ public class Play extends AbstractScreen {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
-		switch(state) {
+		switch (state) {
 		case GAME_RUNNING:
+			camera.update();
+
+			//world step for collision detection and other stuff
 			world.step(TIMESTEP, VELOCITYITR, POSITIONITR);
 			
 			ball.update(delta);
@@ -72,11 +75,17 @@ public class Play extends AbstractScreen {
 			if(ball.getContHole() == 2) {
 				state = 2;
 			}
+			
+			//setting up the projection used by the batch
 			batch.setProjectionMatrix(camera.combined); 
 			batch.begin();
+			
+			//drawing background
 			sprt.setPosition(-sprt.getWidth()/2, -sprt.getHeight()/2);
 			sprt.setScale(WORLD_TO_BOX);
 			sprt.draw(batch);
+			
+			//drawing the bodies
 			world.getBodies(tmpBodies);
 			Body temp = null;
 			for (Body body : tmpBodies) {
@@ -92,13 +101,16 @@ public class Play extends AbstractScreen {
 					temp = body;
 				}
 			}
+			
 			if (temp.getUserData() instanceof Sprite) {
 				Sprite sprite = (Sprite) temp.getUserData();
 				sprite.setPosition(temp.getPosition().x - sprite.getWidth()
 						/ 2, temp.getPosition().y - sprite.getHeight() / 2);
 				sprite.draw(batch);
 			}
+			
 			batch.end();
+			
 			break;
 		case GAME_WON:
 			game.setScreen(new DialogPopup(game, "                  YOU WIN!", level));
@@ -154,9 +166,10 @@ public class Play extends AbstractScreen {
 	}
 	
 	private void createWorld() {
-		
+
 		Json json = new Json();
 		
+		//loading user data
 		player = new Player();
 		player.setLevel(json.fromJson(Integer.class, Gdx.files.local("playerData.json")));
 		
@@ -205,6 +218,7 @@ public class Play extends AbstractScreen {
 			}
 		}));
 		
+		//adding the stage and table with a label
 		table = new Table();
 		stage = new Stage();
 		stage.addActor(table);
@@ -214,6 +228,7 @@ public class Play extends AbstractScreen {
 		table.setBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		table.add(tapScr);
 		
+		//initializing the background camera and world
 		Texture stxt = new Texture("img/back.jpg");
 		sprt = new Sprite(stxt);
 		batch = new SpriteBatch();
@@ -229,6 +244,7 @@ public class Play extends AbstractScreen {
 		float ratio = wSize /  hSize;
 		float ballSize = (float) (ratio/11.9);
 		
+		//worlds
 		switch(level) {
 		case 1:
 			Tworld.makeWorld1();

@@ -28,14 +28,20 @@ public class Ball extends DynamicObject implements ContactListener{
 		this.game = game;
 		this.world = world;
 		this.r = r;
+		
+		//setting the world contact listener to know ball collisions
 		world.setContactListener(this);
 	}
 	
 	public void makeBody() {
 		
+		//initializing the sprite and its size
 		Sprite ballSprite = new Sprite(new Texture("img/sphere.png"));
 		ballSprite.setSize(r*2, r*2);
 		ballSprite.setOrigin(r/2, r/2);
+	
+		
+		//initializing cicle's bodydef and shape to apply to the fixture
 		BodyDef bodydef = new BodyDef();
 		bodydef.type = BodyType.DynamicBody;
 		bodydef.position.set(position.x, position.y);
@@ -43,12 +49,16 @@ public class Ball extends DynamicObject implements ContactListener{
 		CircleShape circle = new CircleShape();
 		circle.setRadius(r);
 		
+		
+		//initializing fixture
 		FixtureDef def = new FixtureDef();
 		def.shape = circle;
 		def.density = 6.5f;
 		def.friction = .85f;
 		def.restitution = 0.15f;
 		
+		
+		//creating the ball setting it's fixture and add to the world
 		ball = world.createBody(bodydef);
 		ball.createFixture(def);
 		ball.getFixtureList().get(0).setUserData("b");
@@ -58,10 +68,13 @@ public class Ball extends DynamicObject implements ContactListener{
 	
 	public void update(float deltaTime) {
 
+		//getting accelM forces and aplying it to the ball
 		float acY = Gdx.input.getAccelerometerY();
 		float acX = Gdx.input.getAccelerometerX();
 		ball.applyForceToCenter(r*5 * acY, r*5 * -acX, true);
 
+		
+		//keeping track of balls velocity and position
 		velocity.add(acY * deltaTime, -acX * deltaTime);
 
 		position.add(velocity.x * deltaTime, velocity.y * deltaTime);
@@ -73,18 +86,22 @@ public class Ball extends DynamicObject implements ContactListener{
 
 	@Override
 	public void beginContact(Contact contact) {
+		
+		//contact with a normal hole
 		if(contact.getFixtureA().getUserData() != null && 
 				contact.getFixtureB().getUserData().equals("b") &&
 				contact.getFixtureA().getUserData().equals("h")) {
 			contHole = 1;
 			System.out.println("contactH");
 		}
+		//contact with the winning hole
 		if(contact.getFixtureA().getUserData() != null && 
 				contact.getFixtureB().getUserData().equals("b") &&
 				contact.getFixtureA().getUserData().equals("wh")) {
 			contHole = 2;
 			System.out.println("contactWH");
 		}
+		//contact with a wall
 		if(contact.getFixtureA().getUserData() != null && 
 				contact.getFixtureB().getUserData().equals("b") &&
 				contact.getFixtureA().getUserData().equals("w")) {
@@ -108,7 +125,6 @@ public class Ball extends DynamicObject implements ContactListener{
 	public void postSolve(Contact contact, ContactImpulse impulse) {
 		
 	}
-	
 	
 	public int getContHole() {
 		return contHole;

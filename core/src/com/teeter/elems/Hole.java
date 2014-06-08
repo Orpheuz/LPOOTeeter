@@ -48,10 +48,12 @@ public class Hole extends Element {
 
 		FixtureDef def = new FixtureDef();
 		def.shape = circle;
-		def.isSensor = true;
+		def.isSensor = true; //detects collision but doesnt interact
 
 		hole = world.createBody(bodydef);
 		hole.createFixture(def);
+		
+		//setting different user data so that we can know which hole the ball collided with
 		switch (holeType) {
 		case NORMAL_HOLE:
 			hole.getFixtureList().get(0).setUserData("h");

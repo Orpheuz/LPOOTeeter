@@ -56,7 +56,8 @@ public class LevelMenu extends AbstractScreen {
 		
 		table = new Table(skin);
 		table.setBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
+		
+		//adding the buttons
 		for(int i = 1; i < 6; i++) {
 
 			final int level = i;
