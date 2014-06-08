@@ -19,6 +19,8 @@ public class Player implements Json.Serializable{
 	
 	public void levelPassed() {
 		level++;
+		if(level > 5) 
+			level = 5; //actual levels, might change
 	}
 	
 	@Override

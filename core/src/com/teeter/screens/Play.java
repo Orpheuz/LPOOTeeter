@@ -243,23 +243,56 @@ public class Play extends AbstractScreen {
 		float hSize = Gdx.graphics.getHeight();
 		float ratio = wSize /  hSize;
 		float ballSize = (float) (ratio/11.9);
+
 		
-		//worlds
-		switch(level) {
+		// worlds
+		switch (level) {
 		case 1:
 			Tworld.makeWorld1();
 
-			ball = new Ball(game, (float) -(wSize/2 * 0.8 * WORLD_TO_BOX), 
-					(float) -(hSize/2 * 0.7 * WORLD_TO_BOX), ballSize, world);
-			
+			ball = new Ball(game, (float) -(wSize / 2 * 0.8 * WORLD_TO_BOX),
+					(float) -(hSize / 2 * 0.7 * WORLD_TO_BOX), ballSize, world);
+
 			ball.makeBody();
-			
+
 			break;
 		case 2:
 			Tworld.makeWorld2();
 
 			ball = new Ball(game, (float) -(wSize / 2 * 0.8 * WORLD_TO_BOX),
 					(float) -(hSize / 2 * 0.7 * WORLD_TO_BOX), ballSize, world);
+
+			ball.makeBody();
+
+			break;
+
+		case 3:
+
+			Tworld.makeWorld3();
+
+			ball = new Ball(game, (float) -(wSize / 2 * 0.8 * WORLD_TO_BOX),
+					(float) -(hSize / 2 * 0.7 * WORLD_TO_BOX), ballSize, world);
+
+			ball.makeBody();
+
+			break;
+
+		case 4:
+
+			Tworld.makeWorld4();
+
+			ball = new Ball(game, (float) -(wSize / 2 * 0.8 * WORLD_TO_BOX),
+					(float) (hSize / 2 * 0.7 * WORLD_TO_BOX), ballSize, world);
+
+			ball.makeBody();
+
+			break;
+
+		case 5:
+			Tworld.makeWorld5();
+
+			ball = new Ball(game, (float) -(wSize / 2 * 0.85 * WORLD_TO_BOX),
+					(float) -(hSize / 2 * 0.75 * WORLD_TO_BOX), ballSize, world);
 
 			ball.makeBody();
 
