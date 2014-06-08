@@ -1,5 +1,6 @@
 package com.teeter.screens;
 
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -12,13 +13,14 @@ import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Json;
+import com.teeter.cli.Player;
 import com.teeter.elems.Ball;
 import com.teeter.game.Teeter;
 import com.teeter.worlds.TeeterWorld;
@@ -46,6 +48,7 @@ public class Play extends AbstractScreen {
 	private Array<Body> tmpBodies = new Array<Body>();
 	private Sprite sprt;
 	private TeeterWorld Tworld;
+	private Player player;
 
 	public Play(Teeter game, int level) {
 		super(game);
@@ -85,14 +88,6 @@ public class Play extends AbstractScreen {
 						sprite.draw(batch);
 					}
 				}
-//				else if (body.getFixtureList().get(0).getUserData() == "w") {
-//					if (body.getUserData() instanceof Sprite) {
-//						Sprite sprite = (Sprite) body.getUserData();
-//						sprite.setPosition(body.getPosition().x - sprite.getWidth()
-//								/ 2, body.getPosition().y - sprite.getHeight() / 2);
-//						sprite.draw(batch);
-//					}
-//				}
 				else {
 					temp = body;
 				}
@@ -107,6 +102,8 @@ public class Play extends AbstractScreen {
 			break;
 		case GAME_WON:
 			game.setScreen(new DialogPopup(game, "                  YOU WIN!", level));
+			player.levelPassed();
+			player.write(new Json());
 			break;
 		case GAME_LOST:
 			pause();
@@ -157,6 +154,11 @@ public class Play extends AbstractScreen {
 	}
 	
 	private void createWorld() {
+		
+		Json json = new Json();
+		
+		player = new Player();
+		player.setLevel(json.fromJson(Integer.class, Gdx.files.local("playerData.json")));
 		
 		Gdx.input.setInputProcessor(new GestureDetector(new GestureListener() {
 			
@@ -222,20 +224,29 @@ public class Play extends AbstractScreen {
 		Tworld = new TeeterWorld(world);
 		Tworld.makeWorld();
 		
+		float wSize = Gdx.graphics.getWidth();
+		float hSize = Gdx.graphics.getHeight();
+		float ratio = wSize /  hSize;
+		float ballSize = (float) (ratio/11.9);
+		
 		switch(level) {
 		case 1:
 			Tworld.makeWorld1();
-			
-			float wSize = Gdx.graphics.getWidth();
-			float hSize = Gdx.graphics.getHeight();
-			float ratio = wSize /  hSize;
-			float ballSize = (float) (ratio/11.9);
-			
+
 			ball = new Ball(game, (float) -(wSize/2 * 0.8 * WORLD_TO_BOX), 
 					(float) -(hSize/2 * 0.7 * WORLD_TO_BOX), ballSize, world);
 			
 			ball.makeBody();
 			
+			break;
+		case 2:
+			Tworld.makeWorld2();
+
+			ball = new Ball(game, (float) -(wSize / 2 * 0.8 * WORLD_TO_BOX),
+					(float) -(hSize / 2 * 0.7 * WORLD_TO_BOX), ballSize, world);
+
+			ball.makeBody();
+
 			break;
 		}
 	}

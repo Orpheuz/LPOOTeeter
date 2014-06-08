@@ -24,7 +24,7 @@ public class OptionsMenu extends AbstractScreen {
 
 	@Override
 	public void render(float delta) {
-		Gdx.gl.glClearColor(0.25f, 0.25f, 0.25f, 1);
+		Gdx.gl.glClearColor(0.15f, 0.15f, 0.15f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		stage.act(delta);

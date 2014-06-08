@@ -85,6 +85,10 @@ public class TeeterWorld {
 		
 	}
 	
+	public void makeWorld2() {
+		
+	}
+	
 	public Ball getBall() {
 		return ball;
 	}
